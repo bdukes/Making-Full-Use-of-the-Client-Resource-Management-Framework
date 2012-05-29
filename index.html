@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=1024" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1024">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Making Full Use of the Client Resource Management Framework | Day of DotNetNuke, Charlotte, June 2, 2012 | by Brian Dukes @BrianDukes</title>
     
-    <meta name="description" content="DotNetNuke 6.1 introduced the Client Resource Management framework to give developers and skinners a central mechanism for managing JavaScript and CSS that needs to be included in your site. The framework enables us to think about our scripts and styles much more logically, and leave the worries of optimizing behind. In this presentation, I’ll introduce the framework, show how and why to use it, and point out some tips and tricks to make it easier to use and manage." />
-    <meta name="author" content="Brian Dukes" />
+    <meta name="description" content="DotNetNuke 6.1 introduced the Client Resource Management framework to give developers and skinners a central mechanism for managing JavaScript and CSS that needs to be included in your site. The framework enables us to think about our scripts and styles much more logically, and leave the worries of optimizing behind. In this presentation, I’ll introduce the framework, show how and why to use it, and point out some tips and tricks to make it easier to use and manage.">
+    <meta name="author" content="Brian Dukes">
 
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
-    <link href="css/impress-demo.css" rel="stylesheet" />
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold" rel="stylesheet">
+    <link href="css/combined-styles.css" rel="stylesheet">
     
-    <link rel="shortcut icon" href="favicon.png" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body class="impress-not-supported">
 <div class="fallback-message">
@@ -21,10 +21,16 @@
     <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
 </div>
 <div id="impress">
-    <div class="step slide" data-x="0">
-        <h1>Making Full Use of the Client Resource Management Framework</h1>
-        <h2>Brian Dukes, Engage Software</h2>
-        <h3>Charlotte Day of DotNetNuke 2012</h3>
+    <div id="title" class="step slide" data-x="0">
+        <hgroup>
+            <h1>Making Full Use of the Client Resource Management Framework</h1>
+            <h2>Brian Dukes, Engage Software</h2>
+            <h3>Charlotte Day of DotNetNuke 2012</h3>
+        </hgroup>
+        <p class="sponsors">
+            <a href="http://www.dotnetnuke.com/"><img src="img/DotNetNuke.png" alt="DotNetNuke" /></a>
+            <a href="http://www.PowerDNN.com/"><img src="img/PowerDnn.png" alt="PowerDNN" /></a>
+        </p>
     </div>
     <div class="step slide" data-x="1000">
         <q>Don't you think that presentations given <strong>in modern browsers</strong> shouldn't <strong>copy the limits</strong> of 'classic' slide decks?</q>
@@ -32,11 +38,43 @@
     <div class="step slide" data-x="2000">
         <q>Would you like to <strong>impress your audience</strong> with <strong>stunning visualization</strong> of your talk?</q>
     </div>
+    <div id="sponsors" class="step" data-x="9000" data-rotate="180">
+        <h3>Thanks to all our Generous Sponsors!</h3>
+        <a id="dnn-logo" href="http://www.dotnetnuke.com/"><img src="img/DotNetNuke.png" alt="DotNetNuke" /></a>
+        <a href="http://www.PowerDNN.com/"><img src="img/PowerDnn.png" alt="PowerDNN" /></a>
+        <a href="http://uncc.edu/"><img src="img/UNC%20Charlotte.png" alt="University of North Carolina at Charlotte" /></a>
+        <a href="http://www.engagesoftware.com/"><img src="img/Engage.png" alt="Engage Software" /></a>
+        <a href="http://www.aspose.com/"><img src="img/Aspose.png" alt="Aspose" /></a>
+        <a href="http://www.packflash.com/"><img src="img/PackFlash.png" alt="PackFlash" /></a>
+        <a href="http://www.arrownuke.com/"><img src="img/Arrow%20Consulting%20%26%20Design.png" alt="Arrow Consulting &amp; Design" /></a>
+        <a href="http://www.appliedi.net/"><img src="img/Applied%20Innovations.png" alt="Applied Innovations" /></a>
+        <a href="http://www.cfwebmasters.com/"><img src="img/CF%20Webmasters.png" alt="Cape Fear Webmasters" /></a>
+        <a href="http://enlivenstudio.com/"><img src="img/enliven.png" alt="Enliven Studio" /></a>
+        <a href="http://coolcoyotes.com/"><img src="img/Cool%20Coyotes.png" alt="Cool Coyotes" /></a>
+        <a href="http://www.iowacomputergurus.com/"><img src="img/Iowa%20Computer%20Gurus.png" alt="Iowa Computer Gurus" /></a>
+        <a href="http://www.roberthalftechnology.com/"><img src="img/Robert%20Half%20Technology.png" alt="Robert Half Technology" /></a>
+        <a href="http://dnndev.com/"><img src="img/DNN%20Dev.jpg" alt="DNNDev" /></a>
+        <a href="https://www.technicalcommunity.com/Pages/default.aspx"><img src="img/Microsoft%20UGSS.png" alt="Microsoft User Group Support Services" /></a>
+        <a href="http://www.infragistics.com/"><img src="img/Infragistics.png" alt="Infragistics" /></a>
+        <a href="http://logicaladvantage.com/"><img src="img/Logical%20Advantage.png" alt="Logical Advantage" /></a>
+        <a href="http://www.spiffywebteam.com/"><img src="img/Spiffy.png" alt="Spiffy Web Team" /></a>
+        <a href="http://www.pointclick.net/"><img src="img/PointClick%20Technologies.png" alt="PointClick Technologies" /></a>
+    </div>
 </div>
 
 <div class="hint">
     <p>Use a spacebar or arrow keys to navigate</p>
 </div>
-<script src="js/impress.js"></script>
+<script src="js/LAB.min.js"></script>
+<script>
+$LAB
+.script("js/impress.js")
+.script("js/shCore.js").wait()
+.script("js/shBrushCSharp.js")
+.script("js/shBrushJScript.js")
+.wait(function () {
+    SyntaxHighlighter.all();
+});
+</script>
 </body>
 </html>
