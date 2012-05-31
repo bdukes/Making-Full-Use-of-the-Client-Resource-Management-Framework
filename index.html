@@ -94,6 +94,206 @@
             <li>DnnFormBottomProvider</li>
             <li>Use the features</li>
             <li><a href="http://www.dotnetnuke.com/Resources/Wiki/Page/Client-Resource-Management-API.aspx">http://www.dotnetnuke.com/Resources/Wiki/Page/Client-Resource-Management-API.aspx</a></li>
+            <!--
+Overview»
+There are two primary reasons for discussing the topic of client resource management:
+
+    Performance is a feature (fast sites lead to satisfied users)
+    DotNetNuke has been largely optimized on the server side, not so much on the client side
+
+
+Here is a wonderful quote from the Yahoo! Exceptional Performance Team about the performance of web sites:
+
+80% of the end-user response time is spent on the front-end. Most of this time is tied up in downloading all the components in the page: images, stylesheets, scripts, Flash, etc. Reducing the number of components in turn reduces the number of HTTP requests required to render the page. This is the key to faster pages.
+
+With that in mind, the state of DotNetNuke 6.0, brand new installation, home page:
+
+    Unauthenticated: 6 CSS Files and 13 JavaScript files (total: 19)
+    Logged in as host: 8 CSS Files and 22 JavaScript files (total: 30)
+
+
+Obviously there is room for improvement!
+
+Getting Started»
+Please review how to How to Enable Client Resource Management
+
+Overall Strategy»
+DotNetNuke 6.1 represents the first step in an overall strategy to improve client side performance as follows:
+
+    Reduce the file size of each resource
+    Only deliver a resource that is needed
+    Combine resources into as few as possible
+
+
+Solution Characteristics»
+DotNetNuke 6.1 has these characteristics which lay the building blocks for achieving the goals mentioned above:
+
+    Resource Registration API to request that a JS or CSS resource be loaded
+    Combines all requests of a given type into composite files on a per-page basis
+    Caches the combined files and persists on disk
+    Reuse of cached files across pages if appropriate
+    Allows for cache busting based on versioning scheme
+
+
+The Client Dependency Framework»
+The Client Dependency Framework (CDF), was adopted in DotNetNuke 6.1 to perform the bulk of the heavy lifting. Here are some facts about the CDF:
+
+    It is an Open Source Framework (http://clientdependency.codeplex.com)
+    Licensed under the Microsoft Public License (Ms-PL)
+    Originally released in early 2010
+    Supports both ASP.NET MVC & ASP.NET WebForms
+    Used in Umbraco
+    Meets all key characteristics mentioned in "solution characteristics" above
+
+
+Implementation Details»
+Several enhancements have been made to the DotNetNuke framework to integrate and make use of the CDF.
+
+    ClientResourceManager is the central location for the new API
+    A File Order Enumeration was created to help define the order of core files
+    New CDF Providers were created to define the location at which various files would render in the document
+    Default.aspx and Installer.aspx were enhanced to incorporate centralized resource registration
+    jQuery registration was updated to use the new API
+    The WebControls and WebUtility projects were updated to use the new API (except for dnn.js)
+    Various CSS and JS registrations were updated to use the new API throughout the framework
+    A Cache invalidation strategy was created so updates to existing files would be recognized
+    Dynamic minification of files is performed using JS Min and can be toggled in the web.config
+
+
+A New Approach»
+There are a few key concepts that allow developers to work more easily:
+
+    Can use the "debug" version of files, no need to minify
+    Can break out "overloaded" files into multiple files (logical separation of concerns) and register as appropriate
+
+
+The API itself»
+There are a variety of ways to interact with the new API. Below describes several common scenarios/topics:
+
+New User Controls: DnnJsInclude and DnnCssInclude»
+There are two new user controls available in DNN 6.1: DnnJsInclude and DnnCssInclude. Here are a few usage examples taken from the Dark Knight skin:
+
+<%@ Register TagPrefix="dnn" Namespace="DotNetNuke.Web.Client.ClientResourceManagement" Assembly="DotNetNuke.Web.Client" %>
+
+<dnn:DnnJsInclude runat="server" FilePath="jquery.cycle.min.js" PathNameAlias="SkinPath" />
+<dnn:DnnJsInclude runat="server" FilePath="DNNMega/jquery.dnnmega.debug.js" PathNameAlias="SkinPath" />
+<dnn:DnnCssInclude runat="server" FilePath="DNNMega/dnnmega.css" PathNameAlias="SkinPath" />
+<dnn:DnnJsInclude runat="server" FilePath="~/Resources/Shared/Scripts/jquery/jquery.hoverIntent.min.js" />
+
+
+The above controls expose the following key properties that can be set:
+
+    FilePath is the path to the file to be loaded
+    PathNameAlias is a reference to a common folder location. Right now we have established two: "SkinPath" (the path to the current skin) and "SharedScripts" (~/Resources/Shared/Scripts/).
+    Priority is an integer based scheme for determining the file load order. The default priority is 100. See the Relative Order section below for more information.
+    ForceProvider is a string value that specifies what provider to be used. This corresponds to the location in the page where the script will be rendered. See the Providers section below for more information.
+
+
+DotNetNuke.Web.Client»
+If you'd like to register a resource file in code, you can do so using the ClientResourceManager found in DotNetNuke.Web.Client. First add a reference to the assembly, and then make use of any of the API methods listed below. For more information about priority and providers, please see their respective sections below.
+
+There are a few different overloads for registering a stylesheet, the most common is listed first:
+
+RegisterStyleSheet(Page page, string filePath) //default provider and default priority
+RegisterStyleSheet(Page page, string filePath, int priority) // default provider
+RegisterStyleSheet(Page page, string filePath, FileOrder.Css priority) // default provider, uses FileOrder enumeration (primarily for internal framework use)
+RegisterStyleSheet(Page page, string filePath, int priority, string provider)
+
+
+There are also a few overloads for registering a JavaScript file, again, the most common are listed first.
+
+RegisterScript(Page page, string filePath) // default priority and provider
+RegisterScript(Page page, string filePath, int priority) // default provider
+RegisterScript(Page page, string filePath, FileOrder.Js priority) // default provider, uses fileorder enumeration
+RegisterScript(Page page, string filePath, FileOrder.Js priority, string provider) // no defaults
+RegisterScript(Page page, string filePath, int priority, string provider) // no defaults
+
+
+Relative Order»
+There is an enumeration that defines the file load order (priority) of each of the internal files that the DNN framework is responsible for loading. They have been spaced out a bit so that an extension developer can sneak their files in wherever they like.
+
+Note: the FileOrder enumeration is not intended to be used outside of the core application. For instance, if you want to register something after jQuery but before jQuery UI - you would use a value of 6,7,8 or 9 when registering the script. Or you could use your own enumeration (e.g. MyFileOrder.AfterjQueryBeforejQueryUI) to give a good name to the number.
+
+JavaScript priorities:
+
+Default: 100
+jQuery: 5
+jQuery UI: 10
+DnnXxml: 15
+DnnXmlJsParser: 20
+DnnXmlHttp: 25
+DnnXmlHttpJsXmlHttpRequest: 30
+DnnDomPositioning: 35
+DnnControls: 40
+DnnControlsLabelEdit: 45
+
+
+CSS priorities:
+
+DefaultCss: 5
+ModuleCss: 10
+SkinCss: 15
+SpecificSkinCss: 20
+ContainerCss: 25
+SpecificContainerCss: 30
+PortalCss: 35
+
+
+Providers: dictating the file's location within the document»
+By specifying a provider, you can dictate where the file will load in the page. CSS all loads in the DnnPageHeaderProvider by default. DnnBodyProvider is the default for JavaScript files.
+
+The following providers are available and will be useful for JavaScript:
+
+    DnnPageHeaderProvider: adds the file to a specific location within the head
+    DnnBodyProvider: adds the file to the top of the body (most framework-level files are loaded here, as that's how it has always worked in the past and there are several dependencies within the body on the framework-level files)
+    DnnFormBottomProvider: adds the file to the bottom of the body (primarily for scripts that have a dependency on the ClientAPI's __dnnVariable which is rendered at the bottom of the page)
+
+
+Important Note: file combining and ordering is done by the framework at the file registration provider level! As well as duplication detection/removing! Please take this into account when registering files.
+
+Debugging»
+The combination and minification of files can be disabled by setting the web.config's debug mode to true.
+
+Versioning»
+Versioning is done through an integer value specified in the web.config. DNN increments the number when an extension is installed, a DNN upgrade is performed, the cache is cleared (in the host settings), or portal.css is updated through the user interface. Each of these actions will increment the version number, which triggers a rebuild of the cache. This also necessarily means that the application will recycle.
+
+Using the API from a custom ASPX page (possible, but not recommended)»
+This should not be a common scenario, but in some cases you may need to register JS files from a custom physical ASPX page within DNN. If that is the case - you will need to mimic several relevant pieces from Default.aspx and also reference DotnetNuke.Web.Client.dll.
+
+While the current items below should not change, there may be new elements introduced over time that you would also need to replicate, so be warned that this is not a completely optimal/safe usage scenario. There is no guarantee that upgrading DNN will not break or limit this usage scenario, as these are technically internal DNN implementation details that are duplicated to accommodate a non-standard scenario.
+
+The ClientResourceManagement register directive, placed at the top of the page:
+
+<%@ Register TagPrefix="dnncrm" Namespace="DotNetNuke.Web.Client.ClientResourceManagement" Assembly="DotNetNuke.Web.Client" %>
+
+
+This placeholder for rendering resources should be located near the bottom of the head element:
+
+<asp:PlaceHolder runat="server" ID="ClientDependencyHeadCss"></asp:PlaceHolder>
+<asp:PlaceHolder runat="server" ID="ClientDependencyHeadJs"></asp:PlaceHolder>
+
+
+This placeholder for rendering resources should be located at the top (but still inside) of the form element:
+
+<asp:PlaceHolder ID="BodySCRIPTS" runat="server" />
+
+
+This placeholder for rendering resources should be located at the bottom (but still inside) of the form element:
+
+<asp:placeholder runat="server" ID="ClientResourcesFormBottom" />
+
+
+The Client Resource Loader control and the placeholder for dynamic placeholder in which includes are added - these should be placed below (outside) the form element:
+
+<asp:placeholder runat="server" id="ClientResourceIncludes" />
+<dnncrm:ClientResourceLoader runat="server" id="ClientResourceLoader">
+        <Paths>
+            <dnncrm:ClientResourcePath Name="SkinPath" Path="<%# CurrentSkinPath %>" />
+            <dnncrm:ClientResourcePath Name="SharedScripts" Path="~/Resources/Shared/Scripts/" />
+        </Paths>
+</dnncrm:ClientResourceLoader>
+
+            -->
         </ul>
     </div>
     <div id="sponsors" class="step" data-x="11000" data-rotate="180">
