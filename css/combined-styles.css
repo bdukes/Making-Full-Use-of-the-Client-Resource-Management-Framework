@@ -117,6 +117,13 @@ code, pre {
     font-family: Consolas, 'Bitstream Vera Sans Mono', monospace;
 }
 
+p.cite {
+    text-align: right;
+}
+p.cite::before {
+    content: "\2013\00A0"
+}
+
 .fallback-message {
     font-family: sans-serif;
     line-height: 1.3;
@@ -217,6 +224,30 @@ q strong {
 #title .sponsors {
     text-align: center;
 }
+dl.priorities dt, dl.priorities dd { float: left; background: rgba(200, 200, 200, 1); }
+dl.priorities dt:nth-of-type(even), dl.priorities dd:nth-of-type(even) { background: rgba(200, 200, 200, 0.5); }
+dl.priorities dt { width: 60%; }
+dl.priorities dd { width: 40%; }
+.impress-on-tricks-2-tricks-return #tricks { opacity: 1; }
+
+table {
+    text-align: center;
+    margin: 0 auto;
+    width: 90%;
+}
+th {
+    font-size: 40px;
+    text-decoration: underline;
+    padding-bottom: 0.5em;
+}
+
+#performance strong {
+    font-size: 3em;
+}
+#performance td {
+    line-height: 3em;
+}
+
 #sponsors.step {
     text-align: center;
     padding: 0;
